@@ -11,13 +11,14 @@ const Card = (props) => {
       <Text style={ styles.text }>
         {props.content}
       </Text>
-      { props.input &&
-      <TextInput
-      placeholder="Twoje imię"
-      placeholderTextColor="#8E8E93"
-      onChangeText={setInput}
-      value={input}
-      style={ styles.input } />
+      {props.input &&
+        <TextInput
+          placeholder="Twoje imię"
+          placeholderTextColor="#8E8E93"
+          onChangeText={setInput}
+          value={input}
+          style={ styles.input } 
+        />
       }
     </View>
   )

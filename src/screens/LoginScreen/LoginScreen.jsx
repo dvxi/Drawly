@@ -1,10 +1,14 @@
-import { Text, View, Pressable } from 'react-native';
+import { Text, View, Pressable, ScrollView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import styles from './LoginScreen.style';
 import strings from '../../const/strings.const';
 import Card from '../../components/Card';
 import { cardData } from '../../const/card.const';
+import { useNavigation } from '@react-navigation/native';
 
 const Login = () => {
+  const navigation = useNavigation();
+
   const renderCards = (cardData) => {
     return cardData.map((card, index) => (
         <Card
@@ -13,22 +17,26 @@ const Login = () => {
           content={card.content}
           input
         />
-      )
-    );
+    ));
   };
 
   return (
-    <View style={styles.container}>
-      {renderCards(cardData)}
-      <View style={styles.subcontainer}>
-        <Text style={styles.textTitle}>{strings.loginScreen.subcontainer.title}</Text>
-        <Text style={styles.textSecondary}>{strings.loginScreen.subcontainer.text}</Text>
-      </View>
-      <View style={styles.subcontainer}>
-        <Pressable style={styles.button.main}>
-          <Text style={styles.textMedium}>{strings.loginScreen.button.text}</Text>
-        </Pressable>
-      </View>
+    <View>
+      <LinearGradient 
+        colors={['#1C1C1EDD', '#FFFFFFDD']}
+        style={styles.gradient}
+        pointerEvents={'none'}
+      />
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {renderCards(cardData)}
+        <View style={styles.subcontainer}>
+          <Text style={styles.textTitle}>{strings.loginScreen.subcontainer.title}</Text>
+          <Text style={styles.textSecondary}>{strings.loginScreen.subcontainer.text}</Text>
+          <Pressable style={styles.button.main} onPress={() => navigation.navigate('Drawing')}>
+            <Text style={styles.textMedium}>{strings.loginScreen.button.text}</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
     </View>
   )
 };

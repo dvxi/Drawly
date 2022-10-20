@@ -3,8 +3,20 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Login from './src/screens/LoginScreen/LoginScreen';
+import Drawing from './src/screens/DrawingScreen/DrawingScreen';
 
 const Stack = createNativeStackNavigator();
+
+const navigationOptions = {
+  headerStyle: {
+    backgroundColor: '#1C1C1EFA',
+  },
+  headerTintColor: '#fff',
+  headerTitleStyle: {
+    fontWeight: 'bold',
+  },
+  animation: 'slide_from_right'
+};
 
 const Navigator = (
   <Stack.Navigator initialRouteName="Login">
@@ -13,13 +25,15 @@ const Navigator = (
       component={Login}
       options={{
         title: 'Drawly',
-        headerStyle: {
-          backgroundColor: '#1c1c1e',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        ...navigationOptions,
+      }}
+    />
+    <Stack.Screen 
+      name="Drawing"
+      component={Drawing}
+      options={{
+        title: 'Drawing Board',
+        ...navigationOptions
       }}
     />
   </Stack.Navigator>

@@ -1,17 +1,20 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+    gradient: {
+      position:'absolute',
+      bottom: 0,
+      width: '100%',
+      height: '100%'
+    },
     container: {
-      flex: 1,
-      backgroundColor: '#1c1c1e',
-      alignItems: 'center',
-      justifyContent: 'center',
+      backgroundColor: '#1C1C1EDD',
+      height: '100%',
       paddingHorizontal: 30,
     },
     subcontainer: {
       alignItems: 'center',
-      marginVertical: 20,
-      height: '10%',
+      marginVertical: 10,
     },
     textMedium: {
       color: '#fff',
@@ -33,10 +36,11 @@ export default StyleSheet.create({
       main: {
         backgroundColor: '#FF8854',
         padding: 20,
-        borderRadius: 15
+        borderRadius: 15,
+        marginVertical: 10,
       },
       secondary: {
   
       }
     }
-  });
+});
