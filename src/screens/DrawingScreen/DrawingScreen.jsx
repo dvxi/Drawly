@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { SafeAreaView, View, Button } from 'react-native';
 import { Canvas, Skia, SkiaView, Path, useDrawCallback, useTouchHandler } from '@shopify/react-native-skia';
 import styles from './DrawingScreen.style';
 
@@ -8,14 +8,17 @@ const Drawing = () => {
   const canvas = useRef();
   const currentPath = useRef();
   const [completedPaths, setCompletedPaths] = useState([]);
+  const [changesHistory, setChangesHistory] = useState({ undo:[], redo:[]});
 
   const updatePaths = () => {
     if (!currentPath.current) return;
+    canvas.current.clear(Skia.Color("#FFFFFF00"));
     let updatedPaths = {
       path: currentPath.current?.path.copy(),
       paint: currentPath.current?.paint.copy()
     };
     setCompletedPaths(completedPaths => [...completedPaths, updatedPaths]);
+    setChangesHistory(({undo, redo}) => ({ undo: [...undo, currentPath], redo:[...redo]}));
   };
 
   const onDrawingActive = useCallback((touchInfo) => {
@@ -71,11 +74,22 @@ const Drawing = () => {
 
   const onDraw = useDrawCallback((_canvas, info) => {
     touchHandler(info.touches);
-    canvas.current = _canvas;
+
+    if (!canvas.current) {
+      canvas.current = _canvas;
+    }
   }, []);
+
+  const undoChanges = () => {
+    let undoPath = changesHistory.undo[-1];
+
+    setChangesHistory(({undo, redo}) => ({undo: [...undo.slice(0,-1)], redo:[...redo, undoPath]}));
+    setCompletedPaths(completedPaths => [...completedPaths.slice(0,-1)]);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
+      <Button title="undo" onPress={undoChanges} />
         <View style={styles.canvasContainer}>
           <SkiaView
             onDraw={onDraw}
