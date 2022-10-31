@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { SafeAreaView, View, Button } from 'react-native';
+import { SafeAreaView, View, Pressable, Text } from 'react-native';
 import { Canvas, Skia, SkiaView, Path, useDrawCallback, useTouchHandler } from '@shopify/react-native-skia';
 import styles from './DrawingScreen.style';
 
@@ -18,7 +18,7 @@ const Drawing = () => {
       paint: currentPath.current?.paint.copy()
     };
     setCompletedPaths(completedPaths => [...completedPaths, updatedPaths]);
-    setChangesHistory(({undo, redo}) => ({ undo: [...undo, currentPath], redo:[...redo]}));
+    setChangesHistory(({undo, redo}) => ({ undo: [...undo, updatedPaths], redo:[...redo]}));
   };
 
   const onDrawingActive = useCallback((touchInfo) => {
@@ -41,7 +41,7 @@ const Drawing = () => {
       const { x, y } = touchInfo;
 
       const paint = Skia.Paint();
-      paint.setColor(Skia.Color("black"));
+      paint.setColor(Skia.Color("#FFFFFF"));
       paint.setStyle(1);
       paint.setStrokeWidth(5);
       
@@ -81,31 +81,59 @@ const Drawing = () => {
   }, []);
 
   const undoChanges = () => {
-    let undoPath = changesHistory.undo[-1];
+    if (changesHistory.undo.length < 1) return;
+    let undoPath = changesHistory.undo[changesHistory.undo.length - 1];
 
     setChangesHistory(({undo, redo}) => ({undo: [...undo.slice(0,-1)], redo:[...redo, undoPath]}));
     setCompletedPaths(completedPaths => [...completedPaths.slice(0,-1)]);
   }
 
+  const redoChanges = () => {
+    if (changesHistory.redo.length < 1) return;
+    let redoPath = changesHistory.redo[changesHistory.redo.length - 1];
+    
+    setChangesHistory(({undo, redo}) => ({undo: [...undo, redoPath], redo:[...redo.slice(0,-1)]}));
+    setCompletedPaths(completedPaths => [...completedPaths, redoPath]);
+  }
+
+  const convertSVG = () => {
+
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Button title="undo" onPress={undoChanges} />
-        <View style={styles.canvasContainer}>
-          <SkiaView
-            onDraw={onDraw}
-            style={styles.drawingBoard}
-          />
-          <Canvas style={styles.canvas}>
-            {completedPaths?.map((path) => (
-              <Path
-                key={path.path.toSVGString()}
-                path={path.path}
-                paint={{ current: path.paint }}
-              />
-            ))}
-          </Canvas>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+          <Text style={styles.textBigTitle}>Cześć, Janek!</Text>
+          <Text style={styles.textSecondary}>Poniżej znajduje się pole do projektowania wzoru ciastka oraz informacja o Twoim miejscu w kolejce. Miłej zabawy!</Text>
+          <Text style={styles.textTitle}>Projektowanie</Text>
+          <View style={styles.canvasContainer}>
+            <SkiaView
+              onDraw={onDraw}
+              style={styles.drawingBoard}
+            />
+            <Canvas style={styles.canvas}>
+              {completedPaths?.map((path) => (
+                <Path
+                  key={path.path.toSVGString()}
+                  path={path.path}
+                  paint={{ current: path.paint }}
+                />
+              ))}
+            </Canvas>
+          </View>
+          <View style={styles.row}>
+            <Pressable style={styles.button.secondary} onPress={undoChanges}>
+                <Text style={styles.textMedium}>Cofnij</Text>
+            </Pressable>
+            <Pressable style={styles.button.secondary} onPress={redoChanges}>
+                <Text style={styles.textMedium}>Powtórz</Text>
+            </Pressable>
+          </View>
+          <Pressable style={styles.button.main} onPress={convertSVG}>
+            <Text style={styles.textMedium}>Zatwierdź i wyślij do wydruku</Text>
+          </Pressable>
         </View>
-    </SafeAreaView>
+      </SafeAreaView>
   )
 };
 

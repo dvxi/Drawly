@@ -8,7 +8,7 @@ export default StyleSheet.create({
       height: '100%'
     },
     container: {
-      backgroundColor: '#1C1C1EDD',
+      backgroundColor: '#1C1C1E',
       height: '100%',
       paddingHorizontal: 30,
     },
