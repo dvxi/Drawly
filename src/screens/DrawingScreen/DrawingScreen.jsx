@@ -2,6 +2,8 @@ import { useCallback, useRef, useState } from 'react';
 import { SafeAreaView, View, Pressable, Text } from 'react-native';
 import { Canvas, Skia, SkiaView, Path, useDrawCallback, useTouchHandler } from '@shopify/react-native-skia';
 import styles from './DrawingScreen.style';
+import strings from '../../const/strings.const';
+import exportGCode from '../../utilities/exportGCode';
 
 const Drawing = () => {
   const touchState = useRef(false);
@@ -97,15 +99,21 @@ const Drawing = () => {
   }
 
   const convertSVG = () => {
+    let svgArray = [];
 
+    completedPaths.map((path) => (
+      svgArray.push(path.path.toSVGString())
+    ));
+
+    exportGCode(svgArray);
   }
 
   return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
-          <Text style={styles.textBigTitle}>Cześć, Janek!</Text>
-          <Text style={styles.textSecondary}>Poniżej znajduje się pole do projektowania wzoru ciastka oraz informacja o Twoim miejscu w kolejce. Miłej zabawy!</Text>
-          <Text style={styles.textTitle}>Projektowanie</Text>
+          <Text style={styles.textBigTitle}>{strings.drawingScreen.greeting.title}</Text>
+          <Text style={styles.textSecondary}>{strings.drawingScreen.greeting.text}</Text>
+          <Text style={styles.textTitle}>{strings.drawingScreen.drawingCanvas.title}</Text>
           <View style={styles.canvasContainer}>
             <SkiaView
               onDraw={onDraw}
@@ -123,14 +131,14 @@ const Drawing = () => {
           </View>
           <View style={styles.row}>
             <Pressable style={styles.button.secondary} onPress={undoChanges}>
-                <Text style={styles.textMedium}>Cofnij</Text>
+                <Text style={styles.textMedium}>{strings.drawingScreen.undoButton.text}</Text>
             </Pressable>
             <Pressable style={styles.button.secondary} onPress={redoChanges}>
-                <Text style={styles.textMedium}>Powtórz</Text>
+                <Text style={styles.textMedium}>{strings.drawingScreen.redoButton.text}</Text>
             </Pressable>
           </View>
           <Pressable style={styles.button.main} onPress={convertSVG}>
-            <Text style={styles.textMedium}>Zatwierdź i wyślij do wydruku</Text>
+            <Text style={styles.textMedium}>{strings.drawingScreen.confirmButton.text}</Text>
           </Pressable>
         </View>
       </SafeAreaView>

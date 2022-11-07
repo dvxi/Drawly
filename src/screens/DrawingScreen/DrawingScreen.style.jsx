@@ -15,11 +15,8 @@ export default StyleSheet.create({
       overflow: 'hidden',
       elevation: 1,
       alignSelf: 'center',
-      marginBottom: 30
+      marginVertical: 10
 		},
-    mb3: {
-      marginBottom: 30
-    },
 		drawingBoard: {
 			height: '100%',
 			width: '100%',
@@ -45,12 +42,12 @@ export default StyleSheet.create({
       color: '#fff',
       fontWeight: 'bold',
       fontSize: 19,
-      marginVertical: 15,
     },
     textSecondary: {
       color: "#8E8E93",
       fontSize: 14,
       marginVertical: 5,
+      marginBottom: 20
     },
     button: {
       main: {
@@ -66,7 +63,8 @@ export default StyleSheet.create({
         padding: 10,
         borderRadius: 15,
         alignItems: 'center',
-        width: '48%'
+        width: '48%',
+        marginVertical: 10
       }
     },
     row: {

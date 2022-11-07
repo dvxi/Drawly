@@ -30,14 +30,14 @@ export default StyleSheet.create({
     textSecondary: {
       color: "#8E8E93",
       fontSize: 14,
-      marginVertical: 5,
+      marginVertical: 10,
     },
     button: {
       main: {
         backgroundColor: '#FF8854',
         padding: 20,
         borderRadius: 15,
-        marginVertical: 10,
+        marginVertical: 20,
       },
       secondary: {
   

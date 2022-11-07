@@ -15,7 +15,8 @@ const navigationOptions = {
   headerTitleStyle: {
     fontWeight: 'bold',
   },
-  animation: 'slide_from_right'
+  animation: 'slide_from_right',
+  headerBackTitleVisible: false
 };
 
 const Navigator = (
