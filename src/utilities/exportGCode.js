@@ -4,7 +4,7 @@ const EXTRUDER_SPEED = 0.03326; // jednostki E na jednostke odleglosci
 const Z_POS = 0.2;
 
 const SKIA_XY_RANGE = 330;
-const PRINTER_XY_RANGE = 220;
+const PRINTER_XY_RANGE = 110;
 
 let scale = PRINTER_XY_RANGE / SKIA_XY_RANGE;
 
@@ -42,11 +42,11 @@ const exportGCode = (props) => {
 
         if(index == 0) {
 
-            newLine = `\n G0 F2700 X${e[0]*scale} Y${(SKIA_XY_RANGE - e[1]) * scale} Z${Z_POS} E0`;
+            newLine = `\n G0 F2700 X${(e[0]*scale) + 55} Y${(SKIA_XY_RANGE - e[1]) * scale + 55} Z${Z_POS} E0`;
 
         } else if(e.length > 2) {
 
-            newLine = `\n G0 X${e[0]*scale} Y${(SKIA_XY_RANGE - e[1]) * scale}`;
+            newLine = `\n G0 X${e[0]*scale + 55} Y${(SKIA_XY_RANGE - e[1]) * scale + 55}`;
 
         } else {
             if(index > 1) {
@@ -56,7 +56,7 @@ const exportGCode = (props) => {
                 dExtrude = length * EXTRUDER_SPEED;
             }
 
-            newLine = `\n G1 X${e[0]*scale} Y${(SKIA_XY_RANGE - e[1]) * scale} E${extruderPosition + dExtrude}`;
+            newLine = `\n G1 X${e[0]*scale + 55} Y${(SKIA_XY_RANGE - e[1]) * scale + 55} E${extruderPosition + dExtrude}`;
 
             extruderPosition += dExtrude;
         }

@@ -5,7 +5,8 @@ import styles from './DrawingScreen.style';
 import strings from '../../const/strings.const';
 import exportGCode from '../../utilities/exportGCode';
 
-const Drawing = () => {
+const Drawing = ({ navigation, route }) => {
+
   const touchState = useRef(false);
   const canvas = useRef();
   const currentPath = useRef();
@@ -111,7 +112,7 @@ const Drawing = () => {
   return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
-          <Text style={styles.textBigTitle}>{strings.drawingScreen.greeting.title}</Text>
+          <Text style={styles.textBigTitle}>{strings.drawingScreen.greeting.title}{route.params.name}</Text>
           <Text style={styles.textSecondary}>{strings.drawingScreen.greeting.text}</Text>
           <Text style={styles.textTitle}>{strings.drawingScreen.drawingCanvas.title}</Text>
           <View style={styles.canvasContainer}>

@@ -17,9 +17,16 @@ export default StyleSheet.create({
       marginVertical: 10,
     },
     textMedium: {
-      color: '#fff',
-      fontSize: 16,
-      fontWeight: 'bold'
+      active: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
+      },
+      disabled: {
+        color: '#3A3A3C',
+        fontSize: 16,
+        fontWeight: 'bold'
+      },
     },
     textTitle: {
       color: '#fff',
@@ -33,14 +40,17 @@ export default StyleSheet.create({
       marginVertical: 10,
     },
     button: {
-      main: {
+      active: {
         backgroundColor: '#FF8854',
         padding: 20,
         borderRadius: 15,
         marginVertical: 20,
       },
-      secondary: {
-  
+      disabled: {
+        backgroundColor: '#8E8E93',
+        padding: 20,
+        borderRadius: 15,
+        marginVertical: 20,
       }
     }
 });

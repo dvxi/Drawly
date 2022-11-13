@@ -1,11 +1,22 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+    cardCompleteContainer: {
+      backgroundColor: '#3A3A3C',
+      borderRadius: 15,
+      padding: 20,
+      width: '100%',
+      marginVertical: 15,
+      borderWidth: 1,
+      borderColor: '#00FF19',
+    },
     cardContainer: {
       backgroundColor: '#3A3A3C',
       borderRadius: 15,
       padding: 20,
       width: '100%',
+      borderWidth: 1,
+      borderColor: '#3A3A3C',
       marginVertical: 15,
     },
     title: {
