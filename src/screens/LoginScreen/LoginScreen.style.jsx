@@ -51,6 +51,7 @@ export default StyleSheet.create({
         padding: 20,
         borderRadius: 15,
         marginVertical: 20,
-      }
+      },
+      pressed: { backgroundColor: '#D17045' }
     }
 });

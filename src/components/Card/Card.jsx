@@ -10,7 +10,7 @@ const Card = (props) => {
   }
 
   return (
-    <View style={props.value.filter((value) => value!="").length > 0 ? styles.cardCompleteContainer : styles.cardContainer}>
+    <View style={props.hasErrors != "" ? styles.cardErrorContainer : styles.cardContainer}>
       <Text style={ styles.title }>{props.title}</Text>
       <Text style={ styles.text }>
         {props.content}
@@ -26,6 +26,9 @@ const Card = (props) => {
         />
       ))
       }
+      <Text style={props.hasErrors ? styles.errorText : {}}>
+        {props.hasErrors.split('\n').slice(0, -1).join('\n\n') + "\n"}
+      </Text>
     </View>
   )
 };
