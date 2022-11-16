@@ -14,7 +14,8 @@ const strings = {
             text: 'Poniżej znajduje się pole do projektowania wzoru ciastka oraz informacja o Twoim miejscu w kolejce. Miłej zabawy!'
         },
         drawingCanvas: {
-            title: 'Projektowanie'
+            title: 'Projektowanie',
+            printingTitle: 'Drukowanie rysunku...'
         },
         undoButton: {
             text: 'Cofnij'
@@ -24,6 +25,12 @@ const strings = {
         },
         confirmButton: {
             text: 'Zatwierdź i wyślij do wydruku'
+        },
+        status: {
+            preparing: 'oczekiwanie',
+            in_queue: 'w kolejce',
+            in_progress: 'drukowanie',
+            complete: 'gotowe do odbioru'
         }
     }
 };

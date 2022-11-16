@@ -71,5 +71,20 @@ export default StyleSheet.create({
       flex: 0,
       flexDirection: 'row',
       justifyContent: 'space-between'
-    }
+    },
+    progressContainer: {
+      alignSelf: 'center',
+      alignItems: 'center',
+      marginVertical: 10
+    },
+    progressStatus: {
+      marginVertical: 45,
+      marginHorizontal: 25
+    },
+    progressText: {
+      fontSize: 20,
+      alignSelf: 'center',
+      color: 'white'
+    },
+    additionalMargin: { marginTop: 20 }
 });

@@ -79,14 +79,14 @@ const Login = () => {
     
     axios(config)
       .then((response) => {
-        if (!response.data["printer_id"]) {
+        const printerID = response.data["printer_id"];
+        if (!printerID) {
           errors.printer += "Failed to log in - check the credentials\n";
           setErrorMsg(errors);
           return;
         }
         
-        navigation.navigate('Drawing', 
-          { name: userName, printerID: response.data["printer_id"] });
+        navigation.navigate('Drawing', { name: userName, printerID });
       })
       .catch((error) => console.log(error));
   }

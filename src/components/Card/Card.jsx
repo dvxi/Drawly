@@ -5,7 +5,6 @@ import styles from './Card.style';
 const Card = (props) => {
 
   const changeHandler = (dataType, data) => {
-    console.log(dataType + " | " + data);
     props.handleInput(dataType, data);
   }
 

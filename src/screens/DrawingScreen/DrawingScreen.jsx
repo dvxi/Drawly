@@ -1,6 +1,8 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SafeAreaView, View, Pressable, Text } from 'react-native';
 import { Canvas, Skia, SkiaView, Path, useDrawCallback, useTouchHandler } from '@shopify/react-native-skia';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import axios from 'axios';
 import styles from './DrawingScreen.style';
 import strings from '../../const/strings.const';
 import exportGCode from '../../utilities/exportGCode';
@@ -11,7 +13,17 @@ const Drawing = ({ navigation, route }) => {
   const canvas = useRef();
   const currentPath = useRef();
   const [completedPaths, setCompletedPaths] = useState([]);
-  const [changesHistory, setChangesHistory] = useState({ undo:[], redo:[]});
+  const [changesHistory, setChangesHistory] = useState({ undo: [], redo: [] });
+  const [hideButtons, setHideButtons] = useState(false);
+  const [percentage, setPercentage] = useState(0);
+  const [statusText, setStatusText] = useState("");
+  const [jobID, setJobID] = useState(0);
+
+  const restartCanvas = () => {
+    setCompletedPaths([]);
+    setChangesHistory({ undo: [], redo: [] });
+    setHideButtons(false);
+  };
 
   const updatePaths = () => {
     if (!currentPath.current) return;
@@ -76,12 +88,13 @@ const Drawing = ({ navigation, route }) => {
   });
 
   const onDraw = useDrawCallback((_canvas, info) => {
+    if (hideButtons) return;
     touchHandler(info.touches);
 
     if (!canvas.current) {
       canvas.current = _canvas;
     }
-  }, []);
+  }, [hideButtons]);
 
   const undoChanges = () => {
     if (changesHistory.undo.length < 1) return;
@@ -99,22 +112,84 @@ const Drawing = ({ navigation, route }) => {
     setCompletedPaths(completedPaths => [...completedPaths, redoPath]);
   }
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (hideButtons) {
+        let config = {
+          method: 'get',
+          url: 'https://http-nodejs-production-5172.up.railway.app/listJob'.concat('/', jobID),
+        };
+        
+        axios(config)
+          .then((job) => {
+            setPercentage(parseFloat(job.data.progress));
+            setStatusText("Status: " + strings.drawingScreen.status[job.data.status]);
+          })
+          .catch((error) => console.log(error));
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [jobID, percentage]);
+
   const convertSVG = () => {
+    setHideButtons(true);
     let svgArray = [];
 
-    completedPaths.map((path) => (
-      svgArray.push(path.path.toSVGString())
-    ));
+    completedPaths.map((pathData) => svgArray.push(pathData.path.toSVGString()));
 
-    exportGCode(svgArray);
+    // exportGCode(svgArray);
+
+    let data = JSON.stringify({
+      "username": route.params.name,
+      "printerID": route.params.printerID,
+      "paths": svgArray.join(';')
+    });
+    
+    let config = {
+      method: 'post',
+      url: 'https://http-nodejs-production-5172.up.railway.app/newJob',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+    
+    axios(config)
+      .then(async (response) => setJobID(response.data["job_id"]))
+      .catch((error) => console.log(error));
   }
+
+  const renderProgressStatus = () => (
+    <View style={styles.progressStatus}>
+      <Text style={styles.progressText}>
+        {percentage}%
+      </Text>
+    </View>
+  );
+
+  const isDisabled = percentage < 100;
 
   return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
-          <Text style={styles.textBigTitle}>{strings.drawingScreen.greeting.title}{route.params.name}</Text>
-          <Text style={styles.textSecondary}>{strings.drawingScreen.greeting.text}</Text>
-          <Text style={styles.textTitle}>{strings.drawingScreen.drawingCanvas.title}</Text>
+          {hideButtons ? null : (
+            <>
+              <Text style={styles.textBigTitle}>
+                {strings.drawingScreen.greeting.title}{route.params.name}
+              </Text>
+              <Text style={styles.textSecondary}>
+                {strings.drawingScreen.greeting.text}
+              </Text>
+            </>
+          )}
+          <Text style={styles.textTitle}>
+            {
+              hideButtons ? 
+                strings.drawingScreen.drawingCanvas.printingTitle 
+                : 
+                strings.drawingScreen.drawingCanvas.title
+            }
+          </Text>
           <View style={styles.canvasContainer}>
             <SkiaView
               onDraw={onDraw}
@@ -130,17 +205,41 @@ const Drawing = ({ navigation, route }) => {
               ))}
             </Canvas>
           </View>
-          <View style={styles.row}>
-            <Pressable style={styles.button.secondary} onPress={undoChanges}>
-                <Text style={styles.textMedium}>{strings.drawingScreen.undoButton.text}</Text>
-            </Pressable>
-            <Pressable style={styles.button.secondary} onPress={redoChanges}>
-                <Text style={styles.textMedium}>{strings.drawingScreen.redoButton.text}</Text>
-            </Pressable>
-          </View>
-          <Pressable style={styles.button.main} onPress={convertSVG}>
-            <Text style={styles.textMedium}>{strings.drawingScreen.confirmButton.text}</Text>
-          </Pressable>
+          {hideButtons ? (
+            <View style={styles.progressContainer}>
+              <AnimatedCircularProgress
+                size={120}
+                width={15}
+                rotation={0}
+                fill={percentage}
+                tintColor="#00E0FF"
+                backgroundColor="#000000"
+                renderCap={renderProgressStatus}
+              />
+              <Text style={[styles.textMedium, styles.additionalMargin]}>{statusText}</Text>
+              <Pressable 
+                disabled={isDisabled}
+                onPress={restartCanvas}
+                style={[styles.button.main, styles.additionalMargin]}
+              >
+                <Text style={styles.textMedium}>Stwórz nowe ciastko</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <>
+              <View style={styles.row}>
+                <Pressable style={styles.button.secondary} onPress={undoChanges}>
+                    <Text style={styles.textMedium}>{strings.drawingScreen.undoButton.text}</Text>
+                </Pressable>
+                <Pressable style={styles.button.secondary} onPress={redoChanges}>
+                    <Text style={styles.textMedium}>{strings.drawingScreen.redoButton.text}</Text>
+                </Pressable>
+              </View>
+              <Pressable style={styles.button.main} onPress={convertSVG}>
+                <Text style={styles.textMedium}>{strings.drawingScreen.confirmButton.text}</Text>
+              </Pressable>
+            </>
+          )}
         </View>
       </SafeAreaView>
   )
