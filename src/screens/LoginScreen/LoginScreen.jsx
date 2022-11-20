@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Text, View, Pressable, ScrollView } from 'react-native';
+import { useState, useEffect } from 'react';
+import { Text, View, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Crypto from 'expo-crypto';
@@ -8,32 +8,55 @@ import styles from './LoginScreen.style';
 import strings from '../../const/strings.const';
 import Card from '../../components/Card';
 import { cardData } from '../../const/card.const';
+import useStore from '../../utilities/store'
 
 const Login = () => {
   const navigation = useNavigation();
+
+  const localUsername = useStore(state => state.name);
+  const setLocalUsername = useStore(state => state.changeName);
+  const localPrintername = useStore(state => state.printer);
+  const setLocalPrintername = useStore(state => state.changePrinter);
+  const localPassword = useStore(state => state.password);
+  const setLocalPassword = useStore(state => state.changePassword);
 
   const [userName, setUserName] = useState("");
   const [printerName, setPrinterName] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState({ user: "", printer: "" });
+  const [loggingIn, setLoggingIn] = useState(false);
 
   let dataObject = {
     user: [userName],
     printer: [printerName, password]
   }
 
+  useEffect(() => {
+    console.log(localUsername);
+    if(localUsername.length > 0 && localPrintername.length > 0 && localPassword.length > 0){
+      setUserName(localUsername);
+      setPrinterName(localPrintername);
+      setPassword(localPassword);
+      logIn();
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log(errorMsg.user);
+  }, [errorMsg]);
+
   const handleInput = (dataType, data) => {
     switch(dataType){
       case 'userName':
-        setErrorMsg([errorMsg[0], ""]);
+        setErrorMsg({...errorMsg, user: ""});
         setUserName(data);
         break;
       case 'printerName':
-        setErrorMsg(["", errorMsg[1]]);
+        setErrorMsg({...errorMsg, printer: ""});
         setPrinterName(data);
         break;
       case 'password':
-        setErrorMsg(["", errorMsg[1]]);
+        setErrorMsg({...errorMsg, printer: ""});
         setPassword(data);
         break;
       default:
@@ -55,6 +78,7 @@ const Login = () => {
 
     if (Object.values(errors).findIndex((el) => el != "") >= 0) {
       setErrorMsg(errors);
+      setLoggingIn(false);
       return;
     }
 
@@ -83,12 +107,20 @@ const Login = () => {
         if (!printerID) {
           errors.printer += "Failed to log in - check the credentials\n";
           setErrorMsg(errors);
+          setLoggingIn(false);
           return;
         }
         
+        setLocalUsername(userName);
+        setLocalPrintername(printerName);
+        setLocalPassword(passwordHash);
+
         navigation.navigate('Drawing', { name: userName, printerID });
+        setLoggingIn(false);
       })
       .catch((error) => console.log(error));
+
+    setLoggingIn(true);
   }
 
   const renderCards = (cardData) => {
@@ -116,18 +148,23 @@ const Login = () => {
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {renderCards(cardData)}
         <View style={styles.subcontainer}>
-          <Text style={styles.textTitle}>{strings.loginScreen.subcontainer.title}</Text>
-          <Text style={styles.textSecondary}>{strings.loginScreen.subcontainer.text}</Text>
-          <Pressable 
-            style={({ pressed }) => [(userName && printerName && password) ? styles.button.active : styles.button.disabled,
-              pressed ? styles.button.pressed : {}]} 
-            onPress={logIn}
-            disabled={!(userName && printerName && password)}
-          >
-            <Text style={(userName && printerName && password) ? styles.textMedium.active : styles.textMedium.disabled}>
-              {strings.loginScreen.button.text}
-            </Text>
-          </Pressable>
+          <Text style={styles.text.title}>{strings.loginScreen.subcontainer.title}</Text>
+          <Text style={styles.text.secondary}>{strings.loginScreen.subcontainer.text}</Text>
+          {
+            loggingIn ?
+            <ActivityIndicator />
+            :
+            <Pressable 
+              style={({ pressed }) => [(userName && printerName && password) ? styles.button.main.active : styles.button.main.disabled,
+                pressed ? styles.button.pressed : {}]} 
+              onPress={logIn}
+              disabled={!(userName && printerName && password)}
+            >
+              <Text style={(userName && printerName && password) ? styles.text.medium.active : styles.text.medium.disabled}>
+                {strings.loginScreen.button.text}
+              </Text>
+            </Pressable>
+          }
         </View>
       </ScrollView>
     </View>

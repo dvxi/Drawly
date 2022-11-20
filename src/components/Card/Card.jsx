@@ -21,7 +21,8 @@ const Card = (props) => {
           placeholderTextColor="#8E8E93"
           onChangeText={data => changeHandler(input.type, data)}
           value={props.value[index]}
-          style={ styles.input } 
+          style={ styles.input }
+          secureTextEntry={ input.type == "password" }
         />
       ))
       }

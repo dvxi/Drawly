@@ -27,45 +27,72 @@ export default StyleSheet.create({
       width: '100%',
       position: 'absolute'
 		},
-    textMedium: {
-      color: '#fff',
-      fontSize: 16,
-      fontWeight: 'bold'
+    subcontainer: {
+      alignItems: 'center',
+      marginVertical: 10,
     },
-    textBigTitle: {
-      color: '#fff',
-      fontWeight: 'bold',
-      fontSize: 28,
-      marginVertical: 5,
-    },
-    textTitle: {
-      color: '#fff',
-      fontWeight: 'bold',
-      fontSize: 19,
-    },
-    textSecondary: {
-      color: "#8E8E93",
-      fontSize: 14,
-      marginVertical: 5,
-      marginBottom: 20
-    },
-    button: {
-      main: {
-        backgroundColor: '#FF8854',
-        padding: 20,
-        borderRadius: 15,
-        marginVertical: 10,
-        alignItems: 'center'
+    text: {
+      medium: {
+        active: {
+          color: '#fff',
+          fontSize: 16,
+          fontWeight: 'bold'
+        },
+        disabled: {
+          color: '#3A3A3C',
+          fontSize: 16,
+          fontWeight: 'bold',
+          textAlign: 'center'
+        },
+      },
+      title: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 19,
+        marginVertical: 5,
+      },
+      bigTitle: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 28,
+        marginVertical: 5,
       },
       secondary: {
-        borderColor: '#FF8854',
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 15,
-        alignItems: 'center',
-        width: '48%',
-        marginVertical: 10
+        color: "#8E8E93",
+        fontSize: 14,
+        marginVertical: 10,
+      },
+      center: {
+        textAlign: 'center'
       }
+    },
+    button: {
+      main:{
+        active: {
+          backgroundColor: '#FF8854',
+          padding: 20,
+          borderRadius: 15,
+          marginVertical: 20,
+        },
+        disabled: {
+          backgroundColor: '#8E8E93',
+          padding: 20,
+          borderRadius: 15,
+          marginVertical: 20,
+        },
+      },
+      secondary: {
+        active: {
+          borderColor: '#FF8854',
+          borderWidth: 1,
+          padding: 10,
+          borderRadius: 15,
+          alignItems: 'center',
+          width: '48%',
+          marginVertical: 10
+        }
+      },
+      pressed: { backgroundColor: '#D17045' }
     },
     row: {
       flex: 0,

@@ -2,22 +2,44 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { SafeAreaView, View, Pressable, Text } from 'react-native';
 import { Canvas, Skia, SkiaView, Path, useDrawCallback, useTouchHandler } from '@shopify/react-native-skia';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import ProgressBar from 'react-native-animated-progress';
 import axios from 'axios';
 import styles from './DrawingScreen.style';
 import strings from '../../const/strings.const';
-import exportGCode from '../../utilities/exportGCode';
+import useStore from '../../utilities/store';
+// import exportGCode from '../../utilities/exportGCode';
 
 const Drawing = ({ navigation, route }) => {
 
   const touchState = useRef(false);
   const canvas = useRef();
   const currentPath = useRef();
+
   const [completedPaths, setCompletedPaths] = useState([]);
   const [changesHistory, setChangesHistory] = useState({ undo: [], redo: [] });
   const [hideButtons, setHideButtons] = useState(false);
   const [percentage, setPercentage] = useState(0);
   const [statusText, setStatusText] = useState("");
   const [jobID, setJobID] = useState(0);
+
+  const userName = useStore((state) => state.name);
+  const localLastDrawing = useStore((state) => state.lastDrawing);
+  const setLocalLastDrawing = useStore((state) => state.changeLastDrawing);
+  const localLastHistory = useStore((state) => state.changesHistory);
+  const setLocalLastHistory = useStore((state) => state.changeChangesHistory);
+
+  useEffect(() => {
+    if(localLastDrawing.length > 0)
+    {
+      setCompletedPaths(localLastDrawing);
+      setChangesHistory(localLastHistory);
+    }
+  },[])
+
+  useEffect(() => {
+    setLocalLastDrawing(completedPaths);
+    setLocalLastHistory(changesHistory);
+  }, [completedPaths, changesHistory])
 
   const restartCanvas = () => {
     setCompletedPaths([]);
@@ -32,6 +54,11 @@ const Drawing = ({ navigation, route }) => {
       path: currentPath.current?.path.copy(),
       paint: currentPath.current?.paint.copy()
     };
+
+    // console.log(completedPaths.length);
+    // setLocalLastDrawing(completedPaths);
+    // setLocalLastHistory(changesHistory);
+
     setCompletedPaths(completedPaths => [...completedPaths, updatedPaths]);
     setChangesHistory(({undo, redo}) => ({ undo: [...undo, updatedPaths], redo:[...redo]}));
   };
@@ -172,17 +199,24 @@ const Drawing = ({ navigation, route }) => {
   return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
-          {hideButtons ? null : (
-            <>
-              <Text style={styles.textBigTitle}>
-                {strings.drawingScreen.greeting.title}{route.params.name}
-              </Text>
-              <Text style={styles.textSecondary}>
-                {strings.drawingScreen.greeting.text}
-              </Text>
-            </>
-          )}
-          <Text style={styles.textTitle}>
+          <Text style={styles.text.bigTitle}>
+            {
+              hideButtons ? 
+              strings.drawingScreen.greeting[1].title 
+              : 
+              strings.drawingScreen.greeting[0].title
+            }
+            {
+              hideButtons ? 
+              null
+              :
+              userName
+            }
+          </Text>
+          <Text style={styles.text.secondary}>
+            {hideButtons ? strings.drawingScreen.greeting[1].text : strings.drawingScreen.greeting[0].text}
+          </Text>
+          <Text style={styles.text.title}>
             {
               hideButtons ? 
                 strings.drawingScreen.drawingCanvas.printingTitle 
@@ -206,8 +240,12 @@ const Drawing = ({ navigation, route }) => {
             </Canvas>
           </View>
           {hideButtons ? (
-            <View style={styles.progressContainer}>
-              <AnimatedCircularProgress
+            <View>
+            <ProgressBar height={9} progress={50} backgroundColor="#FF8854" trackColor="#3A3A3C"/>
+            <Pressable style={styles.button.secondary}>
+              <Text style={styles.text.medium.active}>Oczekiwanie</Text>
+            </Pressable>
+              {/* <AnimatedCircularProgress
                 size={120}
                 width={15}
                 rotation={0}
@@ -215,28 +253,28 @@ const Drawing = ({ navigation, route }) => {
                 tintColor="#00E0FF"
                 backgroundColor="#000000"
                 renderCap={renderProgressStatus}
-              />
-              <Text style={[styles.textMedium, styles.additionalMargin]}>{statusText}</Text>
+              /> */}
+              {/* <Text style={[styles.text.medium.active, styles.additionalMargin]}>{statusText}</Text> */}
               <Pressable 
                 disabled={isDisabled}
                 onPress={restartCanvas}
-                style={[styles.button.main, styles.additionalMargin]}
+                style={isDisabled ? styles.button.main.disabled : styles.button.main.active}
               >
-                <Text style={styles.textMedium}>Stwórz nowe ciastko</Text>
+              <Text style={styles.text.medium.disabled}>Stwórz nowe ciastko</Text>
               </Pressable>
             </View>
           ) : (
             <>
               <View style={styles.row}>
                 <Pressable style={styles.button.secondary} onPress={undoChanges}>
-                    <Text style={styles.textMedium}>{strings.drawingScreen.undoButton.text}</Text>
+                    <Text style={styles.text.medium.active}>{strings.drawingScreen.undoButton.text}</Text>
                 </Pressable>
                 <Pressable style={styles.button.secondary} onPress={redoChanges}>
-                    <Text style={styles.textMedium}>{strings.drawingScreen.redoButton.text}</Text>
+                    <Text style={styles.text.medium.active}>{strings.drawingScreen.redoButton.text}</Text>
                 </Pressable>
               </View>
-              <Pressable style={styles.button.main} onPress={convertSVG}>
-                <Text style={styles.textMedium}>{strings.drawingScreen.confirmButton.text}</Text>
+              <Pressable style={styles.button.main.active} onPress={convertSVG}>
+                <Text style={[styles.text.medium.active, styles.text.center]}>{strings.drawingScreen.confirmButton.text}</Text>
               </Pressable>
             </>
           )}

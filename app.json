@@ -24,10 +24,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1C1C1E"
-      }
+      },
+      "package": "com.szymichanga.Drawly"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d1be137b-e00b-43f1-87fb-2b28318d8fc5"
+      }
     }
   }
 }

@@ -16,41 +16,56 @@ export default StyleSheet.create({
       alignItems: 'center',
       marginVertical: 10,
     },
-    textMedium: {
-      active: {
+    text: {
+      medium: {
+        active: {
+          color: '#fff',
+          fontSize: 16,
+          fontWeight: 'bold'
+        },
+        disabled: {
+          color: '#3A3A3C',
+          fontSize: 16,
+          fontWeight: 'bold'
+        },
+      },
+      title: {
         color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: 19,
+        marginVertical: 5,
       },
-      disabled: {
-        color: '#3A3A3C',
-        fontSize: 16,
-        fontWeight: 'bold'
-      },
-    },
-    textTitle: {
-      color: '#fff',
-      fontWeight: 'bold',
-      fontSize: 19,
-      marginVertical: 5,
-    },
-    textSecondary: {
-      color: "#8E8E93",
-      fontSize: 14,
-      marginVertical: 10,
+      secondary: {
+        color: "#8E8E93",
+        fontSize: 14,
+        marginVertical: 10,
+      }
     },
     button: {
-      active: {
-        backgroundColor: '#FF8854',
-        padding: 20,
-        borderRadius: 15,
-        marginVertical: 20,
+      main:{
+        active: {
+          backgroundColor: '#FF8854',
+          padding: 20,
+          borderRadius: 15,
+          marginVertical: 20,
+        },
+        disabled: {
+          backgroundColor: '#8E8E93',
+          padding: 20,
+          borderRadius: 15,
+          marginVertical: 20,
+        },
       },
-      disabled: {
-        backgroundColor: '#8E8E93',
-        padding: 20,
-        borderRadius: 15,
-        marginVertical: 20,
+      secondary: {
+        active: {
+          borderColor: '#FF8854',
+          borderWidth: 1,
+          padding: 10,
+          borderRadius: 15,
+          alignItems: 'center',
+          width: '48%',
+          marginVertical: 10
+        }
       },
       pressed: { backgroundColor: '#D17045' }
     }

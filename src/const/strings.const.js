@@ -9,13 +9,19 @@ const strings = {
         }
     },
     drawingScreen: {
-        greeting: {
+        greeting: [
+            {
             title: 'Cześć, ',
             text: 'Poniżej znajduje się pole do projektowania wzoru ciastka oraz informacja o Twoim miejscu w kolejce. Miłej zabawy!'
-        },
+            },
+            {
+            title: 'Brawo!',
+            text: 'Teraz wystarczy poczekać, aż Twoje dzieło ujrzy światło dzienne. Obserwuj poziom postępu i przygotuj się na odbiór ciasteczka.'
+            }
+        ],
         drawingCanvas: {
             title: 'Projektowanie',
-            printingTitle: 'Drukowanie rysunku...'
+            printingTitle: 'Drukowanie'
         },
         undoButton: {
             text: 'Cofnij'
