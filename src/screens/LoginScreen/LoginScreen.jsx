@@ -32,18 +32,13 @@ const Login = () => {
   }
 
   useEffect(() => {
-    console.log(localUsername);
     if(localUsername.length > 0 && localPrintername.length > 0 && localPassword.length > 0){
       setUserName(localUsername);
       setPrinterName(localPrintername);
       setPassword(localPassword);
-      logIn();
+      logIn(true);
     }
-  }, [])
-
-  useEffect(() => {
-    console.log(errorMsg.user);
-  }, [errorMsg]);
+  }, [localUsername, localPrintername, localPassword]);
 
   const handleInput = (dataType, data) => {
     switch(dataType){
@@ -60,12 +55,13 @@ const Login = () => {
         setPassword(data);
         break;
       default:
-        // console.log('incorrect dataType in Card');
         break;
     }
   }
 
-  const logIn = async () => {
+  const logIn = async (autoLogin = false) => {
+    if (!userName || !printerName || !password) return;
+
     const nameRegex = new RegExp('^[a-zA-Z]{2,40}$');
     const loginRegex = new RegExp('^[A-Za-z0-9_-]{8,16}$');
     const passwordRegex = new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})');
@@ -76,16 +72,18 @@ const Login = () => {
     errors.printer += loginRegex.test(printerName) ? "" : "Login incorrect - use 8-16 characters (letters, numbers, characters '-' or '_')\n";
     errors.printer += passwordRegex.test(password) ? "" : "Password incorrect - use at least 6 characters and add a number, large letter or special character\n";
 
-    if (Object.values(errors).findIndex((el) => el != "") >= 0) {
+    if (!autoLogin && Object.values(errors).findIndex((el) => el != "") >= 0) {
       setErrorMsg(errors);
       setLoggingIn(false);
       return;
     }
 
-    const passwordHash = await Crypto.digestStringAsync(
+    let passwordHash = await Crypto.digestStringAsync(
       Crypto.CryptoDigestAlgorithm.SHA256,
       password
     );
+
+    console.log(printerName, password, passwordHash);
 
     const data = JSON.stringify({
       "username": printerName,
@@ -113,7 +111,7 @@ const Login = () => {
         
         setLocalUsername(userName);
         setLocalPrintername(printerName);
-        setLocalPassword(passwordHash);
+        setLocalPassword(password);
 
         navigation.navigate('Drawing', { name: userName, printerID });
         setLoggingIn(false);
