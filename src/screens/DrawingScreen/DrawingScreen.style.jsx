@@ -72,13 +72,11 @@ export default StyleSheet.create({
           backgroundColor: '#FF8854',
           padding: 20,
           borderRadius: 15,
-          marginVertical: 20,
         },
         disabled: {
           backgroundColor: '#8E8E93',
           padding: 20,
           borderRadius: 15,
-          marginVertical: 20,
         },
       },
       secondary: {
@@ -89,6 +87,14 @@ export default StyleSheet.create({
           borderRadius: 15,
           alignItems: 'center',
           width: '48%',
+          marginVertical: 10
+        },
+        wide: {
+          borderColor: '#FF8854',
+          borderWidth: 1,
+          padding: 10,
+          borderRadius: 15,
+          alignItems: 'center',
           marginVertical: 10
         }
       },

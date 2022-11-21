@@ -113,7 +113,7 @@ const Login = () => {
         setLocalPrintername(printerName);
         setLocalPassword(password);
 
-        navigation.navigate('Drawing', { name: userName, printerID });
+        navigation.navigate('Drawing', { printerID });
         setLoggingIn(false);
       })
       .catch((error) => console.log(error));

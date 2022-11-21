@@ -167,7 +167,7 @@ const Drawing = ({ navigation, route }) => {
     // exportGCode(svgArray);
 
     let data = JSON.stringify({
-      "username": route.params.name,
+      "username": userName,
       "printerID": route.params.printerID,
       "paths": svgArray.join(';')
     });
@@ -242,9 +242,9 @@ const Drawing = ({ navigation, route }) => {
           {hideButtons ? (
             <View>
             <ProgressBar height={9} progress={50} backgroundColor="#FF8854" trackColor="#3A3A3C"/>
-            <Pressable style={styles.button.secondary}>
+            <View style={styles.button.secondary.wide}>
               <Text style={styles.text.medium.active}>Oczekiwanie</Text>
-            </Pressable>
+            </View>
               {/* <AnimatedCircularProgress
                 size={120}
                 width={15}
@@ -266,10 +266,10 @@ const Drawing = ({ navigation, route }) => {
           ) : (
             <>
               <View style={styles.row}>
-                <Pressable style={styles.button.secondary} onPress={undoChanges}>
+                <Pressable style={styles.button.secondary.active} onPress={undoChanges}>
                     <Text style={styles.text.medium.active}>{strings.drawingScreen.undoButton.text}</Text>
                 </Pressable>
-                <Pressable style={styles.button.secondary} onPress={redoChanges}>
+                <Pressable style={styles.button.secondary.active} onPress={redoChanges}>
                     <Text style={styles.text.medium.active}>{strings.drawingScreen.redoButton.text}</Text>
                 </Pressable>
               </View>
