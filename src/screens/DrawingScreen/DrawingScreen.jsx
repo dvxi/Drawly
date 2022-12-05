@@ -7,6 +7,8 @@ import axios from 'axios';
 import styles from './DrawingScreen.style';
 import strings from '../../const/strings.const';
 import useStore from '../../utilities/store';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
 // import exportGCode from '../../utilities/exportGCode';
 
 const Drawing = ({ navigation, route }) => {
@@ -162,7 +164,10 @@ const Drawing = ({ navigation, route }) => {
     setHideButtons(true);
     let svgArray = [];
 
-    completedPaths.map((pathData) => svgArray.push(pathData.path.toSVGString()));
+    completedPaths.map((pathData) => {
+      const test = pathData.path.toSVGString();
+      svgArray.push(test);
+    });
 
     // exportGCode(svgArray);
 
@@ -230,9 +235,9 @@ const Drawing = ({ navigation, route }) => {
               style={styles.drawingBoard}
             />
             <Canvas style={styles.canvas}>
-              {completedPaths?.map((path) => (
+              {completedPaths?.map((path, index) => (
                 <Path
-                  key={path.path.toSVGString()}
+                  key={index}
                   path={path.path}
                   paint={{ current: path.paint }}
                 />
@@ -241,7 +246,7 @@ const Drawing = ({ navigation, route }) => {
           </View>
           {hideButtons ? (
             <View>
-            <ProgressBar height={9} progress={50} backgroundColor="#FF8854" trackColor="#3A3A3C"/>
+            <ProgressBar height={9} progress={percentage} backgroundColor="#FF8854" trackColor="#3A3A3C"/>
             <View style={styles.button.secondary.wide}>
               <Text style={styles.text.medium.active}>Oczekiwanie</Text>
             </View>
@@ -267,10 +272,10 @@ const Drawing = ({ navigation, route }) => {
             <>
               <View style={styles.row}>
                 <Pressable style={styles.button.secondary.active} onPress={undoChanges}>
-                    <Text style={styles.text.medium.active}>{strings.drawingScreen.undoButton.text}</Text>
+                    <Ionicons name="arrow-undo" size={16} color="white"/>
                 </Pressable>
                 <Pressable style={styles.button.secondary.active} onPress={redoChanges}>
-                    <Text style={styles.text.medium.active}>{strings.drawingScreen.redoButton.text}</Text>
+                <Ionicons name="arrow-redo" size={16} color="white"/>
                 </Pressable>
               </View>
               <Pressable style={styles.button.main.active} onPress={convertSVG}>

@@ -10,9 +10,20 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "autoIncrement": true
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android" : {
+        "serviceAccountKeyPath": "../Drawly-project/drawly-369119-969688fbe00c.json"
+      },
+      "ios" : {
+        "appleId": "sim28888@gmail.com",
+        "ascAppId": "6444911819",
+        "appleTeamId": "GB95LH89WU"
+      }
+    }
   }
 }
